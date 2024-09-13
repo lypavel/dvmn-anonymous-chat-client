@@ -16,16 +16,16 @@ class TokenApp:
 
         self.root = root
         self.root.geometry('300x250')
-        self.root.title("Регистрация")
+        self.root.title('Регистрация')
 
-        self.nickname_label = tk.Label(root, text="Никнейм:")
+        self.nickname_label = tk.Label(root, text='Никнейм:')
         self.nickname_label.pack(pady=10)
 
         self.nickname_entry = tk.Entry(root, width=30)
         self.nickname_entry.pack(pady=5)
 
         self.ok_button = tk.Button(root,
-                                   text="Получить токен",
+                                   text='Получить токен',
                                    command=self.on_btn_click)
         self.ok_button.pack(pady=10)
 
@@ -78,5 +78,5 @@ def main() -> None:
     root.mainloop()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
