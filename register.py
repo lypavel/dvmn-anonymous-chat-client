@@ -1,18 +1,12 @@
 import asyncio
-import json
 import logging
 import tkinter as tk
 from tkinter import Tk
-from pathlib import Path
 
-import aiofiles
 from configargparse import Namespace
 
-from chat_strings import AUTH_REQUIRED, ENTER_NICKNAME
-from connection import connect_to_chat, process_server_response
-from parse_args import parse_arguments
-
-logger = logging.getLogger(Path(__file__).name)
+from chat_utils.authentication import register_user
+from chat_utils.parse_args import parse_arguments
 
 
 class TokenApp:
@@ -48,7 +42,7 @@ class TokenApp:
         asyncio.run(self.generate_user_token(nickname))
 
     async def generate_user_token(self, entered_nickname: str) -> None:
-        chat_nickname, token = await self.register_user(
+        chat_nickname, token = await register_user(
             self.host,
             self.port,
             entered_nickname
@@ -56,32 +50,6 @@ class TokenApp:
 
         self.update_user_data(nickname=chat_nickname,
                               token=token)
-
-    async def register_user(self,
-                            host: str,
-                            port: int,
-                            nickname: str) -> tuple[str]:
-        async with connect_to_chat(host, port) as (reader, writer):
-            while True:
-                response, json_response = process_server_response(
-                    await reader.readline()
-                )
-
-                if response == AUTH_REQUIRED:
-                    writer.write('\n'.encode())
-                    await writer.drain()
-                elif response == ENTER_NICKNAME:
-                    writer.write(f'{nickname}\n'.encode())
-                    await writer.drain()
-                elif json_response is not None:
-                    nickname = json_response['nickname']
-                    token = json_response['account_hash']
-                    credentials_path = Path('credentials.json')
-                    async with aiofiles.open(credentials_path, 'w') as stream:
-                        await stream.write(json.dumps(json_response,
-                                                      ensure_ascii=True,
-                                                      indent=2))
-                    return nickname, token
 
     def update_user_data(self,
                          nickname: str = '',
@@ -106,7 +74,7 @@ def main() -> None:
     args = parse_arguments()
 
     root = Tk()
-    register_app = TokenApp(root, args)
+    TokenApp(root, args)
     root.mainloop()
 
 

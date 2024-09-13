@@ -29,11 +29,6 @@ def parse_arguments() -> Namespace:
                type=str,
                default='',
                help='Chat user hash')
-    parser.add('--user_name',
-               '--USER_NAME',
-               type=str,
-               default='anonymous',
-               help='User name')
     parser.add('--connection_timeout',
                '--CONNECTION_TIMEOUT',
                type=int,

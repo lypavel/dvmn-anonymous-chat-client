@@ -26,7 +26,7 @@ def process_server_response(raw_response: bytes) -> tuple[str]:
     except json.JSONDecodeError:
         json_response = None
 
-    logger.debug(text_response)
-    logger.debug(json_response)
+    logger.debug(f'Text response: {text_response}')
+    logger.debug(f'Json response: {json_response}')
 
     return text_response, json_response
